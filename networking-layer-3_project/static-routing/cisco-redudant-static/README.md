@@ -10,7 +10,7 @@ Dalam topologi ini, saya menerapkan:
 * **Administrative Distance (AD):** Saya mengatur nilai AD pada jalur cadangan lebih tinggi daripada jalur utama agar mekanisme *failover* dapat berjalan.
 
 ## 🗺️ Topologi Jaringan
-![Network Topology](https://github.com/fasyaAlvyan/Just_Learn_Networking/blob/main/Static-Routing_basic/cisco-redudant-static/Topology.png)
+![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/static-routing/cisco-redudant-static/Topology.png)
 
 ## Cara Menjalankan
 1. Download file `.pkt` di bawah ini.
