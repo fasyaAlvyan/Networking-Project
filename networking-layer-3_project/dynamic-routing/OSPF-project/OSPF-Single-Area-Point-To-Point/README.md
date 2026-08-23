@@ -1,14 +1,15 @@
 # OSPF Single Area Point-To-Point (PNETLab)
 
-## 📌 Deskripsi Proyek
+## Deskripsi Proyek
 Proyek ini merupakan simulasi jaringan Routing dinamis menggunakan protocol **OSPF**, dengan model jaringan **Single Area Point-to-Point**. Tujuannya membuat jaringan yang **redundant** untuk meningkatkan **fault tolerance** , menggunakan teknik **manipulation cost** dengan menentukan cost pada output interface secara manual menggunakan perhitungan
 
 ![formula](https://latex.codecogs.com/svg.image?Cost=\frac{Reference\;Bandwidth}{Interface\;Bandwidth})
 
+\text{Cost} = \frac{\text{Reference Bandwidth}}{\text{Interface Bandwidth}}   
 untuk menentukan Primary path(link) dan Backup link
 
-## 🗺️ Topologi Jaringan
-![Network Topology](https://github.com/fasyaAlvyan/Just_Learn_Networking/blob/main/Dynamic-Routing_basic/OSPF/OSPF-Single-Area-Point-To-Point/Screenshots/Topology.png)
+## Topologi Jaringan
+![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/Screenshots/Topology.png)
 
 ## Konsep Jaringan
 Dalam topologi ini, saya menerapkan:
@@ -29,18 +30,25 @@ Dalam topologi ini, saya menerapkan:
 
 ## Cara Menjalankan
 1. Import konfigurasi MikroTik melalui Winbox atau `/import`
+2. Verifikasi neighbor OSPF dengan perintah `/routing ospf neighbor print`
+3. Cek tabel routing dengan `/ip route print`
+4. Test konektivitas antar LAN dengan ping dari masing-masing router
 
-## 📂 File Konfigurasi
-- Router 1 : [Config file](https://github.com/fasyaAlvyan/Just_Learn_Networking/blob/main/Dynamic-Routing_basic/OSPF/OSPF-Single-Area-Non-Multiaccess/Config/Router1-OSPF_config.rsc)
-- Router 2 : [Config file](https://github.com/fasyaAlvyan/Just_Learn_Networking/blob/main/Dynamic-Routing_basic/OSPF/OSPF-Single-Area-Non-Multiaccess/Config/Router2-OSPF_config.rsc)
-- Router 3 : [Config file](https://github.com/fasyaAlvyan/Just_Learn_Networking/blob/main/Dynamic-Routing_basic/OSPF/OSPF-Single-Area-Non-Multiaccess/Config/Router3-OSPF_config.rsc)
-- Router 4 : [Config file](https://github.com/fasyaAlvyan/Just_Learn_Networking/blob/main/Dynamic-Routing_basic/OSPF/OSPF-Single-Area-Non-Multiaccess/Config/Router4-OSPF_config.rsc)
+##Verifikasi & Pengujian
+
+
+
+## File Konfigurasi
+- Router 1 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/Configs/Router1-OSPF_config.rsc)
+- Router 2 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/Configs/Router2-OSPF_config.rsc)
+- Router 3 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/Configs/Router3-OSPF_config.rsc)
+- Router 4 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/Configs/Router4-OSPF_config.rsc)
 
 ## Kekurangan dan Kelebihan
-# Kekurangan
+### Kekurangan
 - Hanya 1 area (Backbone) dengan tipe Point-to-Point → kurang fleksibel jika topologi berubah.
 - Menggunakan terlalu banyak interface/link PtP (bisa disederhanakan).
-# Kelebihan
+### Kelebihan
 - Link redundan (setiap router terhubung ke 2 router lain).
 - Fault tolerance tinggi berkat cost manipulation.
 
