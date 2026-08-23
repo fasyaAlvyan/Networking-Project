@@ -4,7 +4,7 @@
 Proyek ini merupakan simulasi jaringan **Router-on-Stick** menggunakan MikroTik dan Ruijie Switch. Tujuannya adalah memecah satu broadcast domain menjadi beberapa VLAN (10, 20, dan 99 Management) untuk meningkatkan keamanan, efisiensi, dan segmentasi jaringan.
 
 ## 🗺️ Topologi Jaringan
-![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/Topology.png)
+![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Screenshots/Topology.png)
 
 ## 🛠️ Konsep Jaringan
 Dalam topologi ini, saya menerapkan:
@@ -36,10 +36,10 @@ Dalam topologi ini, saya menerapkan:
 5. Test konektivitas antar Client/Host
 
 ## 📂 File Konfigurasi
-- Edge-Router : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Mikrotik-configs/EDGE-ROUTER_config.rsc)
-- Switch 1 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Mikrotik-configs/Switch-1_config.rsc)
-- Switch 2 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Mikrotik-configs/Switch-2_config.rsc)
-- Ruijie-SW 3 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Ruijie-config/Ruijie-SW%203_config.txt)
+- Edge-Router : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Mikrotik-configs/EDGE-ROUTER_config.rsc)
+- Switch 1 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Mikrotik-configs/Switch-1_config.rsc)
+- Switch 2 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Mikrotik-configs/Switch-2_config.rsc)
+- Ruijie-SW 3 : [Config file](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Ruijie-config/Ruijie-SW%203_config.txt)
 
 ## Kekurangan / Kelemahan
 - Saya tidak mengimplementasikan STP yang berfungsi untuk mencegah broadcast storm atau loop frame yang dikirim secara Broadcast oleh switch yang bisa menyebabkan kinerja jaringan menurun atau menyebabkan device Hang, dan saya tidak melakukan tagging pada Pure-Native path yang bisa menjadi celah keamanan untuk jaringan, yang menyebabkan serangan seperti VLAN Hopping bisa terjadi.
@@ -47,16 +47,16 @@ Dalam topologi ini, saya menerapkan:
 ## ✅ Verifikasi & Pengujian
 
 - **Management VLAN 99 reachable** dari Edge Router (ping ke Switch 1 & Switch 2 sukses, 0% loss):
-  ![Ping Management](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/management-ping-from-edge.png)
+  ![Ping Management](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Screenshots/management-ping-from-edge.png)
 
 - **DHCP leases** di Edge Router (semua client VLAN 10 & 20 bound dengan IP benar):
-  ![DHCP Leases list](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/dhcp-leases-print_edge.png)
+  ![DHCP Leases list](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Screenshots/dhcp-leases-print_edge.png)
 
 - **RoMON neighbors** terdeteksi → semua MikroTik switch terhubung untuk manajemen Layer-2:
-  ![DHCP Leases list](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/romon-neighbors-winbox.png)
+  ![DHCP Leases list](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Screenshots/romon-neighbors-winbox.png)
 
 - **Client-side test** di VPCS (DHCP berhasil, intra-VLAN & inter-VLAN ping OK):
-  ![Client test](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/vpcs3-dhcp-ping-test.png)
+  ![Client test](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-2_project/vlan-project/VLAN_3-Switch-RoS/Screenshots/vpcs3-dhcp-ping-test.png)
 
 ## Rencana perbaikan
 - Saya berencana untuk mengimplementasikan protokol seperti STP,VTP,dan protokol lainnya agar Kinerja jaringan meningkat, dan berencana untuk mengimplementasikan Inter-Vlan Routing pada Switch layer 3 agar paket yang tujuannya ke jaringan internal bisa langsung di forward oleh Switch layer 3 dan Router bisa fokus pada paket yang tujuannya ke luar jaringan.
