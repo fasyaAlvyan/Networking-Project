@@ -32,7 +32,7 @@ Dalam topologi ini, saya menerapkan:
 3. Cek tabel routing dengan `/ip route print`
 4. Test konektivitas antar LAN dengan ping dari masing-masing router
 
-##Verifikasi & Pengujian
+## Verifikasi & Pengujian
 - Tabel IP R1 : ![Semua rute berhasil dikalkulasikan oleh protokol OSPF yang berjalan di R1 dan neighbor OSPF terdeteksi](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/OSPF-single-area-test/OSPF-single1.png)
 - Tabel IP R2 : ![Semua rute berhasil dikalkulasikan oleh protokol OSPF yang berjalan di R2 dan neighbor OSPF terdeteksi](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/OSPF-single-area-test/OSPF-single2.png)
 - Tabel IP R3 : ![Semua rute berhasil dikalkulasikan oleh protokol OSPF yang berjalan di R3 dan neighbor OSPF terdeteksi](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/OSPF-single-area-test/OSPF-single3.png)
