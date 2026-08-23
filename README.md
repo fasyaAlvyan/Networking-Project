@@ -1,3 +1,3 @@
-Repository ini dibuat untuk projek jaringan dasar
+Repository ini dibuat untuk projek jaringan.
 ==============
-This repository is created for basic networking project
+This repository is created for networking project.
