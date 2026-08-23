@@ -5,9 +5,7 @@ Proyek ini merupakan simulasi jaringan Routing dinamis menggunakan protocol **OS
 
 ![formula](https://latex.codecogs.com/svg.image?Cost=\frac{Reference\;Bandwidth}{Interface\;Bandwidth})
 
-\text{Cost} = \frac{\text{Reference Bandwidth}}{\text{Interface Bandwidth}}   
 untuk menentukan Primary path(link) dan Backup link
-
 ## Topologi Jaringan
 ![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/Screenshots/Topology.png)
 
