@@ -1,0 +1,7 @@
+Switch(config-if-GigabitEthernet 0/0)#switchport mode trunk
+Switch(config-if-GigabitEthernet 0/0)#switchport trunk native vlan 99
+Switch(config-if-GigabitEthernet 0/1)#switchport mode access
+Switch(config-if-GigabitEthernet 0/1)#switchport access vlan 10
+Switch(config-if-GigabitEthernet 0/2)#switchport mode access
+Switch(config-if-GigabitEthernet 0/2)#switchport access vlan 20
+Switch(config-if-GigabitEthernet 0/0)#switchport trunk allowed vlan except 1-9,11-19,21-98,100-4094
