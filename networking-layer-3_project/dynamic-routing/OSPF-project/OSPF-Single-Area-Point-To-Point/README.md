@@ -33,7 +33,7 @@ Dalam topologi ini, saya menerapkan:
 4. Test konektivitas antar LAN dengan ping dari masing-masing router
 
 ##Verifikasi & Pengujian
-
+- Tabel IP R1 : <a href="https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/OSPF-single-area-test/OSPF-single1.png">Semua rute berhasil dikalkulasi oleh protokol OSPF<br><img src="https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/dynamic-routing/OSPF-project/OSPF-Single-Area-Point-To-Point/OSPF-single-area-test/OSPF-single1.png?raw=true" width="400"/></a>
 
 
 ## File Konfigurasi
