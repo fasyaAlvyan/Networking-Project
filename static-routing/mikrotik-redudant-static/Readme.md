@@ -6,11 +6,14 @@ Setelah rute terpilih, proses forwarding paket diserahkan ke data plane yang men
 
 
 
-| No   | Nama          | Subnet              | Gateway         | Keterangan                  |
-|------|---------------|---------------------|-----------------|-----------------------------|
-| 1    | Users-10      | 192.168.10.0/24     | 192.168.10.1    | Access VLAN (VPC3, VPC5)    |
-| 2    | Users-20      | 192.168.20.0/24     | 192.168.20.1    | Access VLAN (VPC4, Linux)   |
-| 3    | Management    | 10.1.99.0/29        | 10.1.99.1       | Native VLAN (SVI semua switch) |
+| No   | IP Network      | Subnet Mask           |
+|------|-----------------|---------------------|
+| 1    | 192.168.1.0/24  |  255.255.255.0      |
+| 2    | 192.168.2.0/24  |  255.255.255.0      |
+| 3    | 1.1.1.0/30      |  255.255.255.252    |
+| 3    | 2.2.2.0/30      |  255.255.255.252    |
+| 3    | 3.3.3.0/30      |  255.255.255.252    |
+| 3    | 4.4.4.0/30      |  255.255.255.252    |
 
 ## Topology
 ![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/static-routing/mikrotik-redudant-static/Topology.png)
