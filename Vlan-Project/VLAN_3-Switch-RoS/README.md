@@ -4,7 +4,7 @@
 Proyek ini merupakan simulasi jaringan **Router-on-Stick** menggunakan MikroTik dan Ruijie Switch. Tujuannya adalah memecah satu broadcast domain menjadi beberapa VLAN (10, 20, dan 99 Management) untuk meningkatkan keamanan, efisiensi, dan segmentasi jaringan.
 
 ## 🗺️ Topologi Jaringan
-![Network Topology]([https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/Topology.png])
+![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/Vlan-Project/VLAN_3-Switch-RoS/Screenshots/Topology.png)
 
 ## 🛠️ Konsep Jaringan
 Dalam topologi ini, saya menerapkan:
