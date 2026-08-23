@@ -1,4 +1,4 @@
-# aug/23/2026 10:43:31 by RouterOS 7.1
+# aug/23/2026 17:59:35 by RouterOS 7.1
 # software id = 
 #
 /interface bridge
@@ -12,12 +12,13 @@ set [ find default-name=ether5 ] comment=Bonding-to-eth2-SW_Dist_02
 /interface bonding
 add comment=LAG-to-SW-L3-Dist down-delay=100ms lacp-rate=1sec mii-interval=\
     80ms mode=802.3ad name=LAG-to-SW_L3_Dist slaves=ether2,ether4 \
-    transmit-hash-policy=layer-2-and-3 up-delay=100ms
+    transmit-hash-policy=layer-3-and-4 up-delay=100ms
 add comment=LAG-to-SW-L3-Dist_2 down-delay=100ms lacp-rate=1sec mii-interval=\
     80ms mode=802.3ad name=LAG-to-SW_L3_Dist_2 slaves=ether3,ether5 \
     transmit-hash-policy=layer-3-and-4 up-delay=100ms
 /interface list
 add name=Bonding-Interface-list
+add name=WAN
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
 /port
@@ -35,6 +36,8 @@ add comment=Bonding-Interface-list interface=LAG-to-SW_L3_Dist list=\
     Bonding-Interface-list
 add comment=Bonding-Interface-list interface=LAG-to-SW_L3_Dist_2 list=\
     Bonding-Interface-list
+add comment=UPLINK interface=ether1 list=WAN
+add comment=UPLINK interface=ether8 list=Bonding-Interface-list
 /ip address
 add address=10.0.1.1/30 comment=To-Switch-L3-DIST interface=LAG-to-SW_L3_Dist \
     network=10.0.1.0
@@ -64,7 +67,8 @@ add action=drop chain=input comment="Default Drop Input" connection-state=\
 add action=drop chain=forward comment="Default Drop Forward" \
     connection-state=invalid
 /ip firewall nat
-add action=masquerade chain=srcnat out-interface=ether1
+add action=masquerade chain=srcnat comment="Masking Local IP" \
+    out-interface-list=WAN
 /ip route
 add comment="Recursive(Primary)-GW-(ISP-MiAu-MiAu)" disabled=no distance=1 \
     dst-address=0.0.0.0/0 gateway=8.8.8.8 pref-src="" routing-table=main \

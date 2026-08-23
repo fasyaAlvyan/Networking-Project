@@ -40,9 +40,9 @@ add bpdu-guard=yes bridge=Switch-L2_Accs_2 comment=\
     "ACCS-VRRP-Gateway(BCK)-VLAN-200" edge=yes interface=ether7 \
     point-to-point=yes pvid=200 restricted-role=yes restricted-tcn=yes
 /interface bridge vlan
-add bridge=Switch-L2_Accs_2 comment=Vlan-100-Office tagged=\
+add bridge=Switch-L2_Accs_2 comment=Vlan-100-Server tagged=\
     LAG-to-SW_L3_Dist_1,LAG-to-SW_L2_Accs_1 vlan-ids=100
-add bridge=Switch-L2_Accs_2 comment=Vlan-200-Server tagged=\
+add bridge=Switch-L2_Accs_2 comment=Vlan-200-Office tagged=\
     LAG-to-SW_L3_Dist_1,LAG-to-SW_L2_Accs_1 untagged=ether5,ether7,ether8 \
     vlan-ids=200
 /ip dhcp-client

@@ -1,4 +1,4 @@
-# aug/23/2026 10:47:54 by RouterOS 7.1
+# aug/23/2026 17:56:13 by RouterOS 7.1
 # software id = 
 #
 /interface bridge
@@ -75,8 +75,6 @@ add bridge=Switch-L3-Dist-2 tagged=\
     LAG-to-SW-L2-Accs-3,LAG-to-SW_L2_Accs_4,Switch-L3-Dist-2 vlan-ids=300
 add bridge=Switch-L3-Dist-2 tagged=\
     LAG-to-SW_L2_Accs_4,LAG-to-SW-L2-Accs-3,Switch-L3-Dist-2 vlan-ids=400
-add bridge=Switch-L3-Dist-2 tagged="LAG-to-SW_L3_Dist_1,LAG-to-SW_L2_Accs_4,LA\
-    G-to-SW-L2-Accs-3,Switch-L3-Dist-2" vlan-ids=111
 /ip address
 add address=10.1.0.2/30 comment=IP-R_CORE interface=LAG-to-R_Core network=\
     10.1.0.0

@@ -1,4 +1,4 @@
-# aug/23/2026 10:46:29 by RouterOS 7.1
+# aug/23/2026 17:55:43 by RouterOS 7.1
 # software id = 
 #
 /interface bridge
@@ -109,9 +109,6 @@ add address=10.10.11.6/29 comment="Virtual-GW(BCK)-Vlan-400" interface=\
     VRRP-4-VLAN-400-Engineering network=10.10.11.0
 add address=10.10.11.2/29 comment=IP-Vlan-400 interface=ether12 network=\
     10.10.11.0
-/ip dhcp-relay
-add delay-threshold=1m40s dhcp-server=10.2.1.2 disabled=no interface=\
-    LAG-to-SW_L3_Dist_2 local-address=172.20.1.2 name=Management-DHCP
 /ip dhcp-server
 add address-pool=Guest_IP interface=VRRP-3-VLAN-300-GUEST name=\
     DHCP_For_Vlan-300
