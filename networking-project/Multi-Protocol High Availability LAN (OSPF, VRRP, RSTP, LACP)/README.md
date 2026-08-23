@@ -14,6 +14,8 @@ Jaringan ini menggunakan desain *Three-Tier* yang dikembangkan oleh Cisco (Walau
 
 # Topology
 - Topology ![Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Topology/TOPOLOGY.png)
+## Peran dan fungsi setiap device pada jaringan :
+- Router - Mikrotik - Core : Sebagai Router utama untuk menghubungkan jaringan Local dan Internet. 
 ## Terdapat 2 Root bridge pada jaringan ini, karena :
 ### Desain Port Edge pada Link VRRP Backup
 Link "Gateway Backup" antara Distribution dan Access switch sengaja dipisahkan dari Bonding LAG utama untuk menyediakan jalur independen bagi VRRP Advertisement, mencegah split-brain jika LAG utama gagal total.
