@@ -14,7 +14,7 @@ Jaringan ini menggunakan desain *Three-Tier* yang dikembangkan oleh Cisco (Walau
 - **Keamanan** — jika terjadi serangan pada perangkat Access, isolasi bisa dilakukan hanya pada layer tersebut tanpa perlu mengisolasi Distribution atau Core, sehingga dampak insiden bisa dibatasi.
 - **Kinerja** — setiap perangkat intermediary bekerja sesuai perannya masing-masing (Core untuk forwarding cepat, Distribution untuk policy & inter-VLAN routing, Access untuk konektivitas end device) tanpa mencampuradukkan fungsi, sehingga beban kerja per device lebih terarah dan mudah di-troubleshoot.
 
-# Topology
+## Topology
 - Topology ![Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Topology/TOPOLOGY.png)
 
 ### Peran dan fungsi setiap device pada jaringan :
@@ -40,25 +40,6 @@ Jaringan ini dipecah menjadi 2 instance RSTP yang berbeda agar Root Bridge pada 
 Link "Gateway Backup" antara Distribution dan Access switch sengaja dipisahkan dari Bonding LAG utama untuk menyediakan jalur independen bagi VRRP Advertisement, mencegah split-brain jika LAG utama gagal total.
 Pada sisi Distribution, port link ini **tidak** dimasukkan ke dalam bridge, sehingga berfungsi sebagai interface routed murni dan berada di luar domain RSTP — tidak ada BPDU yang dikirim melalui port ini.
 Pada sisi Access switch, port yang menghadap link ini dikonfigurasi sebagai **edge port** dengan link type **point-to-point**. Karena tidak ada bridge lain di ujung satunya, tidak mungkin terbentuk loop melalui link ini, sehingga status edge port aman digunakan. Jika suatu saat port Distribution secara tidak sengaja dimasukkan ke bridge (menciptakan potensi loop), port Access akan menerima BPDU dan otomatis kehilangan status edge-nya, kembali ke proses RSTP normal sebagai proteksi fallback. Dari riset yang saya lakukan, **edge port** RSTP pada vendor mikrotik tidak mengirimkan BPDU config/TC pada port yang dikonfigurasi sebagai **edge port** khususnya mode "edge=yes". 
-
-### Cara menjalankan
-1. Import konfigurasi MikroTik melalui Winbox atau `/import` ke setiap Device (R-Core,SWL3-DIST1/2,SWL2-Accs_1-4).
-2. Verifikasi LACP/Bonding aktif `/interface bonding print detail` pastikan aktif semua.
-3. Verifikasi OSPF: `/routing ospf neighbor print` pastikan neighbor berstatus Full. Cek `/routing ospf route print` untuk melihat rute hasil kalkulasi SPF, lalu bandingkan dengan `/ip route print detail` untuk pastikan rute masuk ke tabel routing utama.
-4. Verifikasi RSTP `/interface bridge print detail` pastikan RSTP berjalan, `/interface bridge port print detail` pastikan pada root bridge seluruh status port adalah *Designated* dan pada non root bridge pastikan ada 1 port yang berstatus *root port* dan minimal ada 1 port yang berstatus *alternate/backup*.
-5. Verifikasi VRRP `/interafce vrrp print detail` pastikan ada minimal 2 port yang memiliki flag *Running Master* dan dua port lainnya berstatus *Backup*
-6. Test konektivitas antar subnet dan konektivitas ke internet.
-
-
-### File konfigurasi
-- R-Core [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-R_Core.rsc)
-- Switch - L3 - Mikrotik - DIST [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Dist.rsc)
-- Switch - L3 - Mikrotik 02 - DIST [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Dist-2.rsc)
-- Mikrotik - SW - L2 - Accs - 1 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Accs-1.rsc)
-- Mikrotik - SW - L2 - Accs - 2 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-2.rsc)
-- Mikrotik - SW - L2 - Accs - 3 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-3.rsc)
-- Mikrotik - SW - L2 - Accs - 4 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-4.rsc)
-- Ruijie tidak di memiliki file confignya karena device unmanaged switch
 
 ### VLAN & Subnet Schema
 
@@ -91,3 +72,29 @@ Pada sisi Access switch, port yang menghadap link ini dikonfigurasi sebagai **ed
 | **LAG - 4** | Accs3 (Eth 1, Eth 2) | DIST2 (Eth 8, Eth 9) |
 | **LAG - 5** | Accs4 (Eth 1, Eth 2) | DIST2 (Eth 6, Eth 7) |
 | **LAG - 6** | Accs4 (Eth 3, Eth 4) | Accs3 (Eth 3, Eth 4) |
+
+### File konfigurasi
+- R-Core [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-R_Core.rsc)
+- Switch - L3 - Mikrotik - DIST [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Dist.rsc)
+- Switch - L3 - Mikrotik 02 - DIST [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Dist-2.rsc)
+- Mikrotik - SW - L2 - Accs - 1 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Accs-1.rsc)
+- Mikrotik - SW - L2 - Accs - 2 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-2.rsc)
+- Mikrotik - SW - L2 - Accs - 3 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-3.rsc)
+- Mikrotik - SW - L2 - Accs - 4 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-4.rsc)
+- Ruijie tidak memiliki file confignya karena sebuah switch unmanaged
+
+### Cara menjalankan
+1. Import konfigurasi MikroTik melalui Winbox atau `/import` ke setiap Device (R-Core,SWL3-DIST1/2,SWL2-Accs_1-4).
+2. Verifikasi LACP/Bonding aktif `/interface bonding print detail` pastikan aktif semua.
+3. Verifikasi OSPF: `/routing ospf neighbor print` pastikan neighbor berstatus Full. Cek `/routing ospf route print` untuk melihat rute hasil kalkulasi SPF, lalu bandingkan dengan `/ip route print detail` untuk pastikan rute masuk ke tabel routing utama.
+4. Verifikasi RSTP `/interface bridge print detail` pastikan RSTP berjalan, `/interface bridge port print detail` pastikan pada root bridge seluruh status port adalah *Designated* dan pada non root bridge pastikan ada 1 port yang berstatus *root port* dan minimal ada 1 port yang berstatus *alternate/backup*.
+5. Verifikasi VRRP `/interafce vrrp print detail` pastikan ada minimal 2 port yang memiliki flag *Running Master* dan dua port lainnya berstatus *Backup*
+6. Test konektivitas antar subnet dan konektivitas ke internet.
+
+## Verifikasi & Penguian
+### 1. Pengecekan konetivitas client antar Subnet/VLAN
+- [**Mematikan firewall pada SWL3-DIST 1 untuk mengecek konektivitas antar client**](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Screenshot/SW-DIST-1%20Firewall%20mati(untuk%20cek%20konektivitas).png)
+- [**Mematikan firewall pada SWL3-DIST 2 untuk mengecek konektivitas antar client**](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Screenshot/SW-DIST2%20Firewall%20mati(untuk%20cek%20konektivitas).png)
+- [**Menguji konektivitas pada client dari salah satu device di VLAN 400(Engineering)**](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Screenshot/Test%20ping%20antar%20client.png)
+Pada hasil pengujian menggunakan metode ping dengan mengirimkan **ICMP echo request** dari client Engineering dengan IP *10.10.11.3* terbukti mendapatkan **ICMP echo reply** dari seluruh client pada network *192.168.100.0/24(Guest2)*,*10.20.1.0/28(Server)*,*192.168.10.0/24(Office)*,*192.168.20.0/24(Guest)*. Bisa disimpulkan jika antar client saling terkoneksi
+### 2. 
