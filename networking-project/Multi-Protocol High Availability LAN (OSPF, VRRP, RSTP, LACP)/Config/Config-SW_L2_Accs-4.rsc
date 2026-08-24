@@ -2,7 +2,7 @@
 # software id = 
 #
 /interface bridge
-add name=Switch-L2-Accs-4 priority=0x5000 vlan-filtering=yes
+add name=Switch-L2-Accs-4 priority=0x6000 vlan-filtering=yes
 /interface ethernet
 set [ find default-name=ether1 ] comment=Bonding-to-Eth7_SW_L3_Dist-2
 set [ find default-name=ether2 ] comment=Bonding-to-Eth6_SW_L3_Dist-2
