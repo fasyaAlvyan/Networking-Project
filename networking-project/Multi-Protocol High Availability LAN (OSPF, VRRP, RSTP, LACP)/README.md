@@ -1,11 +1,13 @@
 # Designing a Resilient Enterprise LAN: Three-Tier Architecture with OSPF, VRRP, RSTP & LACP
 Proyek ini merupakan simulasi jaringan untuk ketersediaan tinggi dengan mengkombinasikan/mengintegrasikan protokol seperti *Open Shortest Path First(**OSPF**), Virtual Redundancy Router Protocol(**VRRP**), Rapid Spanning Tree Protocol(**RSTP**) dan Link Agregation Control Protocol(**LACP**)*
 ,keempat protokol ini berguna untuk menyelesaikan masalah tiap kelemahan pada desain jaringan untuk mencapai tingkat ketersediaan tinggi dan tahan terhadap kegagalan, dengan metode menyediakan banyak backup untuk setiap device *intermediary* dan media transmisi(*Ethernet cable*), jika ada kegagalan, perangkat yang disediakan sebagai backup akan menghandle sementara agar koneksi client tidak terputus. Keempat protokol ini memiliki perannya masing masing di dalam jaringan.
+
 ## Fungsi dari setiap protokol pada jaringan High Availability(HA) ini :
 - OSPF : OSPF berperan sebagai protokol dynamic routing berbasis Link-State yang melakukan kalkulasi rute terbaik menggunakan algoritma SPF dari data LSDB. Dalam konteks High Availability, OSPF berperan melakukan rekalkulasi rute saat sebuah link atau perangkat mengalami kegagalan, memindahkan trafik ke link alternatif dengan waktu deteksi kegagalan hingga 40 detik (dead interval default).
 - VRRP : VRRP berperan sebagai protokol redundansi gateway dengan membagi 1 IP virtual dan 1 MAC virtual (00:00:5E:00:01:xx) kepada 2 atau lebih perangkat Layer 3. Perangkat ditetapkan peran MASTER dan BACKUP, dimana Master aktif sebagai gateway dan mengirim VRRP Advertisement setiap 1 detik (default) kepada Backup. Jika Backup tidak menerima Advertisement dalam waktu Master Down Interval, Backup akan mengambil alih peran Master secara otomatis.
 - RSTP : RSTP berperan mencegah broadcast storm akibat loop pada topologi redundant. Tidak seperti STP klasik, RSTP memiliki waktu konvergensi yang jauh lebih cepat (dalam hitungan detik) karena menggunakan mekanisme proposal-agreement antar switch. Saat terjadi kegagalan, RSTP akan mengaktifkan Alternate Port atau Backup Port yang sebelumnya dalam kondisi Discarding menjadi Forwarding untuk mempertahankan konektivitas.
 - LACP : LACP berperan menggabungkan 2 atau lebih link fisik menjadi 1 link logis (LAG/Bond) untuk meningkatkan bandwidth agregat dan toleransi kegagalan. LACP menggunakan mekanisme pengiriman LACPDU pada setiap link anggota untuk memverifikasi kondisi link secara berkala. Jika salah satu link mengalami kegagalan, LACP akan mengeluarkannya dari LAG agar tidak masuk ke algoritma hash distribusi trafik (XOR-based), yang berpotensi menyebabkan black hole pada trafik tertentu.
+
 ## Konsep Desain Three-Tier Architecture :
 Jaringan ini menggunakan desain *Three-Tier* yang dikembangkan oleh Cisco (Walaupun vendor yang digunakan adalah Ruijie dan Mikrotik), desain ini digunakan karena beberapa alasan:
 - **Fleksibilitas & Skalabilitas** — pembagian layer membuat jaringan mudah dikelompokkan, ditambah, atau dikembangkan menjadi lebih besar tanpa mengganggu layer lain.
@@ -14,6 +16,7 @@ Jaringan ini menggunakan desain *Three-Tier* yang dikembangkan oleh Cisco (Walau
 
 # Topology
 - Topology ![Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Topology/TOPOLOGY.png)
+
 ### Peran dan fungsi setiap device pada jaringan :
 - Router - Mikrotik - Core : Berperan sebagai router utama yang menghubungkan jaringan lokal dengan internet. Perangkat ini juga bertindak sebagai ASBR (Autonomous System Boundary Router) dalam OSPF, yang bertugas mendistribusikan default route ke seluruh jaringan internal.
 - Switch - L3 - Mikrotik - DIST : Switch Layer 3 ini bertindak sebagai gateway, firewall,Root bridge pada instance 1, dan DHCP Server (untuk VLAN 100-300),sekaligus mengambil alih tugas inter-VLAN routing agar tidak membebani router core. Selain itu, perangkat ini juga mengelola redundansi via VRRP (Master untuk VLAN 100 & 200, serta Backup untuk VLAN 300 & 400), lalu switch ini bertindak sebagai backup jika SW DIST 2 mengalami kegagalan.
@@ -24,17 +27,38 @@ Jaringan ini menggunakan desain *Three-Tier* yang dikembangkan oleh Cisco (Walau
 - Mikrotik - SW - L2 - Accs - 4 : Berperan sebagai switch access untuk client padda VLAN 400 dan berperan sebagai Non root Bridge(Backup(2)) pada instance RSTP 2, memiliki BID dengan *System Priority 0x6000* terhubung dengan kedua switch DIST dan switch access(3)
 - Legacy-Ruijie-SW : Berperan sebagai switch access unmanaged untuk client pada vlan 1(Native), switch ini tidak support dengan standar IEEE 802.1Q untuk menyisipkan tag 802.1Q pada versi frame *Ethernet II*, Switch ini tidak berpartisipasi dengan instance RSTP manapun dan hanya terhubung pada switch DIST 1 saja sebagai gatewaynya untuk vlan 1, tidak ada redundansi gateway yang digunakan karena potensi serangan VLAN hopping yang cukup tinggi.
 - Dual ISP UPLINK(Neko-Neko & MiAu-MiAu) : Berperan sebagai penyedia koneksi ke internet untuk local,menggunakan 2 ISP karena jika salah satu ISP Down,ISP lainnya bisa menjadi Backup, pada R-Core mekanisme perpindahan dilakukan dengan metode Recursive Gateway untuk benar benar mengecek konektivitas langsung ke internet dan menghindari kesalahan palsu dari ONT/ONU yang mati.
+
 ### Catatan Desain VRRP, DHCP Server dan OSPF:
 - Pada jaringan ini, desain yang digunakan adalah active-active load balance,Switch DIST 1 menjadi gateway untuk VLAN 100 & 200, Switch DIST 2 menjadi gateway untuk VLAN 300 & 400 agar tidak hanya satu device yang aktif dengan memanfaatkan resource dan membagi beban gateway antar vlan.
 - Desain DHCP Server yang digunakan adalah DHCP Server dengan split pool dengan pembagian 50/50 pada IP yang didistribusikannya.
 - Desain OSPF yang digunakan adalah *Point to Point*, tidak ada pemilihan DR/BDR/DROther dalam topologi ini karena setiap instance OSPF berjalan di subnet yang berbeda dan tipe jaringannya adalah point to point sehingga pemilihan peran DR tidak diperlukan karena router sudah dipastikan akan mengetahui lawannya tanpa ada kebutuhan untuk melakukan efisiensi LSA packet.
-## Terdapat 2 Root bridge pada jaringan ini, karena :
+
+### Terdapat 2 Root bridge pada jaringan ini, karena:
 Jaringan ini dipecah menjadi 2 instance RSTP yang berbeda agar Root Bridge pada tiap instance selalu align dengan VRRP Master pada domain VLAN yang sama. Instance 1 (Root: SW-DIST) menaungi VLAN 100 & 200, sesuai domain VRRP Master SW-DIST. Instance 2 (Root: SW-DIST2) menaungi VLAN 300 & 400, sesuai domain VRRP Master SW-DIST2.Dengan alignment ini, jalur forwarding Layer 2 (menuju root bridge) selalu sejalan dengan jalur default gateway Layer 3 (VRRP master), sehingga traffic tidak perlu melewati jalur non-optimal (extra hop) untuk mencapai gateway-nya.
+
 ### Desain Port Edge pada Link VRRP Backup
 Link "Gateway Backup" antara Distribution dan Access switch sengaja dipisahkan dari Bonding LAG utama untuk menyediakan jalur independen bagi VRRP Advertisement, mencegah split-brain jika LAG utama gagal total.
 Pada sisi Distribution, port link ini **tidak** dimasukkan ke dalam bridge, sehingga berfungsi sebagai interface routed murni dan berada di luar domain RSTP — tidak ada BPDU yang dikirim melalui port ini.
 Pada sisi Access switch, port yang menghadap link ini dikonfigurasi sebagai **edge port** dengan link type **point-to-point**. Karena tidak ada bridge lain di ujung satunya, tidak mungkin terbentuk loop melalui link ini, sehingga status edge port aman digunakan. Jika suatu saat port Distribution secara tidak sengaja dimasukkan ke bridge (menciptakan potensi loop), port Access akan menerima BPDU dan otomatis kehilangan status edge-nya, kembali ke proses RSTP normal sebagai proteksi fallback. Dari riset yang saya lakukan, **edge port** RSTP pada vendor mikrotik tidak mengirimkan BPDU config/TC pada port yang dikonfigurasi sebagai **edge port** khususnya mode "edge=yes". 
 
+### Cara menjalankan
+1. Import konfigurasi MikroTik melalui Winbox atau `/import` ke setiap Device (R-Core,SWL3-DIST1/2,SWL2-Accs_1-4).
+2. Verifikasi LACP/Bonding aktif `/interface bonding print detail` pastikan aktif semua.
+3. Verifikasi OSPF: `/routing ospf neighbor print` pastikan neighbor berstatus Full. Cek `/routing ospf route print` untuk melihat rute hasil kalkulasi SPF, lalu bandingkan dengan `/ip route print detail` untuk pastikan rute masuk ke tabel routing utama.
+4. Verifikasi RSTP `/interface bridge print detail` pastikan RSTP berjalan, `/interface bridge port print detail` pastikan pada root bridge seluruh status port adalah *Designated* dan pada non root bridge pastikan ada 1 port yang berstatus *root port* dan minimal ada 1 port yang berstatus *alternate/backup*.
+5. Verifikasi VRRP `/interafce vrrp print detail` pastikan ada minimal 2 port yang memiliki flag *Running Master* dan dua port lainnya berstatus *Backup*
+6. Test konektivitas antar subnet dan konektivitas ke internet.
+
+
+### File konfigurasi
+- R-Core [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-R_Core.rsc)
+- Switch - L3 - Mikrotik - DIST [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Dist.rsc)
+- Switch - L3 - Mikrotik 02 - DIST [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Dist-2.rsc)
+- Mikrotik - SW - L2 - Accs - 1 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L3_Accs-1.rsc)
+- Mikrotik - SW - L2 - Accs - 2 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-2.rsc)
+- Mikrotik - SW - L2 - Accs - 3 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-3.rsc)
+- Mikrotik - SW - L2 - Accs - 4 [Config file extension *.rsc*](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-project/Multi-Protocol%20High%20Availability%20LAN%20(OSPF%2C%20VRRP%2C%20RSTP%2C%20LACP)/Config/Config-SW_L2_Accs-4.rsc)
+- Ruijie tidak di memiliki file confignya karena device unmanaged switch
 
 ### VLAN & Subnet Schema
 
