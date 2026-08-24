@@ -1,5 +1,5 @@
 
-# Floating Static Routing Pada Vendor Mikrotik
+# Floating Static Routing on Mikrotik Vendor
 
 ## Topology
 ![Network Topology](https://github.com/fasyaAlvyan/Networking-Project/blob/main/networking-layer-3_project/static-routing/mikrotik-redudant-static/Topology.png)
